@@ -32,7 +32,7 @@ app.post(
  */
 // ============= STRIPE WEBHOOK =============
 // POST endpoint cho Stripe webhook (cần signature)
-app.post(
+app.use(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
@@ -77,6 +77,6 @@ app.use("/api/booking", bookingRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
 
-app.listen(port, () =>
+/* app.listen(port, () =>
   console.log(`Server listening at: http://localhost:${port} `)
-);
+); */
