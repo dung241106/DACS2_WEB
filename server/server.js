@@ -5,7 +5,7 @@ import connectDB from "./config/db.js";
 import { clerkMiddleware } from "@clerk/express";
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js";
-import showRouter from "./routes/showroutes.js";
+import showRouter from "./routes/showRoutes.js";
 import bookingRouter from "./routes/bookingRoutes.js";
 import adminRouter from "./routes/adminRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -42,6 +42,7 @@ app.use("/api/booking", bookingRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
 
-app.listen(port, () =>
+/* app.listen(port, () =>
   console.log(`Server listening at: http://localhost:${port} `)
-);
+); */
+export default app;
