@@ -10,7 +10,7 @@ export const stripeWebhooks = async (req, res) => {
     console.error("Missing STRIPE_SECRET_KEY");
     return res.status(500).send("Server configuration error");
   }
-  if (!process.env.STRIPE_WEBHOOKS_SECRET) {
+  if (!process.env.STRIPE_WEBHOOK_SECRET) {
     console.error("STRIPE_WEBHOOKS_SECRET is not set");
     return res.status(500).send("Server configuration error");
   }
@@ -18,7 +18,7 @@ export const stripeWebhooks = async (req, res) => {
     event = stripeInstance.webhooks.constructEvent(
       req.body,
       sig,
-      process.env.STRIPE_WEBHOOKS_SECRET
+      process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
     return res.status(400).send(`Webhook error:${error.message}`);
