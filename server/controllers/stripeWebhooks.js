@@ -1,9 +1,19 @@
 import stripe from "stripe";
 import Booking from "../models/Booking.js";
 export const stripeWebhooks = async (req, res) => {
+  console.log("Webhook received");
   const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY);
   const sig = req.headers["stripe-signature"];
   let event;
+  // Kiểm tra các biến môi trường
+  if (!process.env.STRIPE_SECRET_KEY) {
+    console.error("Missing STRIPE_SECRET_KEY");
+    return res.status(500).send("Server configuration error");
+  }
+  if (!process.env.STRIPE_WEBHOOKS_SECRET) {
+    console.error("STRIPE_WEBHOOKS_SECRET is not set");
+    return res.status(500).send("Server configuration error");
+  }
   try {
     event = stripeInstance.webhooks.constructEvent(
       req.body,
@@ -29,6 +39,7 @@ export const stripeWebhooks = async (req, res) => {
             paymentLink: "",
           });
         }
+        console.log(`Booking ${bookingId} marked as paid`);
         break;
 
       default:

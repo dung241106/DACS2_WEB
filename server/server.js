@@ -21,12 +21,46 @@ try {
   process.exit(1);
 }
 
-//stripe webhook route
-app.use(
+/* //stripe webhook route
+app.post(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
 );
+
+
+ */
+// ============= STRIPE WEBHOOK =============
+// POST endpoint cho Stripe webhook (cần signature)
+app.post(
+  "/api/stripe",
+  express.raw({ type: "application/json" }),
+  stripeWebhooks
+);
+
+// GET endpoint để test (không cần signature)
+app.get("/api/stripe", (req, res) => {
+  res.json({
+    message: "✅ Stripe webhook endpoint is active",
+    method: "POST",
+    info: "This endpoint receives Stripe webhook events",
+    timestamp: new Date().toISOString(),
+  });
+});
+
+// Test endpoint để verify server hoạt động
+app.get("/api/stripe/health", (req, res) => {
+  res.json({
+    status: "healthy",
+    database: isConnected ? "connected" : "disconnected",
+    timestamp: new Date().toISOString(),
+    env: {
+      hasStripeKey: !!process.env.STRIPE_SECRET_KEY,
+      hasWebhookSecret: !!process.env.STRIPE_WEBHOOKS_SECRET,
+      hasMongoUri: !!process.env.MONGODB_URI,
+    },
+  });
+});
 
 //middleware
 app.use(express.json());
