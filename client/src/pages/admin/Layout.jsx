@@ -1,15 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import AdminNavBar from "../../components/admin/AdminNavBar";
 import { Outlet } from "react-router-dom";
 // Bạn đang import AdminSideBar từ file riêng của nó, đây là cách làm đúng
 import AdminSideBar from "../../components/admin/AdminSideBar";
+import { useAppContext } from "../../context/Appcontext";
+import Loading from "../../components/Loading";
 
 // Bạn không cần import 'assets' ở đây nữa
 // vì 'assets' đã được dùng bên trong file AdminSideBar.jsx
 // import { assets } from "../../assets/assets";
 
 const Layout = () => {
-  return (
+  const { isAdmin, fetchIsAdmin } = useAppContext();
+  useEffect(() => {
+    fetchIsAdmin();
+  }, []);
+  return isAdmin ? (
     <>
       <AdminNavBar />
       <div className=" flex">
@@ -20,6 +26,8 @@ const Layout = () => {
         </div>
       </div>
     </>
+  ) : (
+    <Loading />
   );
 };
 

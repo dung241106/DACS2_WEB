@@ -53,6 +53,7 @@ import { assets } from "../assets/assets";
 import { MenuIcon, Search, SearchIcon, TicketPlus, XIcon } from "lucide-react";
 import { useState } from "react";
 import { useClerk, UserButton, useUser } from "@clerk/clerk-react";
+import { useAppContext } from "../context/Appcontext";
 
 /*  Tạo 1 navbar bao gồm
 logo , menu item , searchIcon , clerkLogin */
@@ -61,6 +62,8 @@ const Navbar = () => {
   const { user } = useUser();
   const { openSignIn } = useClerk();
   const navigate = useNavigate();
+  const { favoriteMovies } = useAppContext();
+  console.log("Navbar Favorites:", favoriteMovies);
   return (
     <div className="fixed top-0 left-0 z-50 w-full flex items-center justify-between px-6 md:px-16 lg:px-36 py-5">
       <Link
@@ -121,15 +124,17 @@ border-gray-300/20 overflow-hidden transition-[width] duration-300    ${
         >
           Release
         </Link>
-        <Link
-          onClick={() => {
-            scrollTo(0, 0);
-            setIsOpen(false);
-          }}
-          to="/favorite"
-        >
-          Farovites
-        </Link>
+        {favoriteMovies.length > 0 && (
+          <Link
+            onClick={() => {
+              scrollTo(0, 0);
+              setIsOpen(false);
+            }}
+            to="/favorite"
+          >
+            Farovites
+          </Link>
+        )}
       </div>
       {/* login */}
       <div className="flex items-center gap-8">

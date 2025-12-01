@@ -7,54 +7,30 @@ import Loading from "../../components/Loading";
 import Title from "../../components/admin/Title";
 import { dateFormat } from "../../lib/dateFormat";
 import isoTimeFormat from "../../lib/isotimeFormat"; // Cần thêm hàm này
+import { useAppContext } from "../../context/Appcontext";
 const ListShows = () => {
   const currency = import.meta.env.VITE_CURRENCY;
+  const { axios, getToken, user } = useAppContext();
   const [shows, setShows] = useState([]); // tạo 1 biến state tên là show, setShow là cập nhật giá trị
   const [loading, setLoading] = useState(true);
   // đã tạo state thì phải fetch data đó
   const getAllShows = async () => {
     try {
-      const allDynamicShows = generateDynamicDateTimeData();
-      const pricePerSeat = 8; // Giả sử giá $8 (giống SeatLayout)
-      const allShowsList = [];
-      // Lặp qua mỗi NGÀY (ví dụ: "2025-11-18")
-      Object.keys(allDynamicShows).forEach((dateKey) => {
-        // Lặp qua mỗi SUẤT CHIẾU trong ngày đó (ví dụ: 09:00, 12:00)
-        allDynamicShows[dateKey].forEach((showTime) => {
-          // Thêm dữ liệu suất chiếu vào mảng
-          allShowsList.push({
-            // Tạm thời gán 1 phim ngẫu nhiên (vì data của bạn không map 1-1)
-            // Ở đây tôi gán 5 suất cho 5 phim đầu tiên
-            movie: dummyShowsData[allShowsList.length % 5] || dummyShowsData[0],
-            showDateTime: showTime.time,
-            showPrice: pricePerSeat,
-            // Giả lập một vài ghế đã đặt
-            occupiedSeats: generateRandomSeats(),
-          });
-        });
+      const { data } = await axios.get("/api/admin/all-shows", {
+        headers: { Authorization: `Bearer ${await getToken()}` },
       });
-
-      setShows(allShowsList);
+      setShows(data.shows);
       setLoading(false);
     } catch (error) {
       console.error(error);
     }
   };
 
-  // Hàm nhỏ để giả lập ghế đã đặt (cho vui)
-  const generateRandomSeats = () => {
-    const seats = {};
-    // SỬA Ở ĐÂY: Đổi * 10 thành * 6 (để random từ 0 đến 5 ghế)
-    const num = Math.floor(Math.random() * 6);
-
-    for (let i = 0; i < num; i++) {
-      seats[`A${i + 1}`] = `user_${i}`;
-    }
-    return seats;
-  };
   useEffect(() => {
-    getAllShows();
-  }, []);
+    if (user) {
+      getAllShows();
+    }
+  }, [user]);
   return !loading ? (
     <>
       <Title text1="List " text2="Shows" />
