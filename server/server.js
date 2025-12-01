@@ -42,7 +42,6 @@ app.use("/api/booking", bookingRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
 
-/* app.listen(port, () =>
+app.listen(port, () =>
   console.log(`Server listening at: http://localhost:${port} `)
-); */
-export default app;
+);
