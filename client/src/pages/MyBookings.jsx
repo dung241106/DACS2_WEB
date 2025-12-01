@@ -5,8 +5,11 @@ import BlurCircle from "../components/BlurCircle";
 import timeFormat from "../lib/timeFormat";
 import { dateFormat } from "../lib/dateFormat";
 import { useAppContext } from "../context/Appcontext";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const MyBookings = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
   const { axios, getToken, user, image_base_url } = useAppContext();
   const currency = import.meta.env.VITE_CURRENCY;
   const [bookings, setBookings] = useState([]);
@@ -30,6 +33,13 @@ const MyBookings = () => {
       getmyBookings();
     }
   }, [user]);
+  // TỰ ĐỘNG RELOAD KHI THANH TOÁN XONG
+  useEffect(() => {
+    if (location.pathname.includes("loading")) {
+      getmyBookings();
+      navigate("/my-bookings", { replace: true });
+    }
+  }, [location.pathname, navigate]);
   return !isLoading ? (
     <div className=" relative px-6 md:px-16 lg:px-40 pt-30 md:pt-40 min-h-[80vh] ">
       <BlurCircle top="100px" left="100px" />
@@ -65,9 +75,12 @@ const MyBookings = () => {
                 {item.amount}
               </p>
               {!item.isPaid && (
-                <button className=" bg-primary px-4 py-2 mb-3 text-sm rounded-full font-medium cursor-pointer">
+                <Link
+                  to={item.paymentLink}
+                  className=" bg-primary px-4 py-2 mb-3 text-sm rounded-full font-medium cursor-pointer"
+                >
                   Pay Now
-                </button>
+                </Link>
               )}
             </div>
             <div className=" text-sm">
