@@ -18,7 +18,7 @@ try {
   await connectDB();
 } catch (error) {
   console.error("Error");
-  process.exit(1);
+  //process.exit(1);
 }
 
 /* //stripe webhook route
