@@ -18,7 +18,6 @@ try {
   await connectDB();
 } catch (error) {
   console.error("Error");
-  //process.exit(1);
 }
 
 //stripe webhook route
@@ -43,15 +42,6 @@ app.use("/api/booking", bookingRouter);
 app.use("/api/admin", adminRouter);
 app.use("/api/user", userRouter);
 
-/* app.listen(port, () =>
+app.listen(port, () =>
   console.log(`Server listening at: http://localhost:${port} `)
-); */
-export default function handler(req, res) {
-  return app(req, res);
-}
-
-export const config = {
-  api: {
-    bodyParser: false, // CRITICAL! Stripe needs raw body
-  },
-};
+);
