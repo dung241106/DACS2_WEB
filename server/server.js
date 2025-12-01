@@ -22,7 +22,7 @@ try {
 }
 
 /* //stripe webhook route
-app.post(
+app.use(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
@@ -32,7 +32,7 @@ app.post(
  */
 // ============= STRIPE WEBHOOK =============
 // POST endpoint cho Stripe webhook (cần signature)
-app.use(
+app.post(
   "/api/stripe",
   express.raw({ type: "application/json" }),
   stripeWebhooks
