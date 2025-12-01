@@ -12,7 +12,7 @@ import { ArrowRightIcon, ClockIcon } from "lucide-react";
 import isoTimeFormat from "../lib/isotimeFormat";
 import BlurCircle from "../components/BlurCircle";
 import toast from "react-hot-toast";
-import { useAppContext } from "../context/Appcontext";
+import { useAppContext } from "../context/Appcontext.jsx";
 
 const SeatLayout = () => {
   const groupRows = [
