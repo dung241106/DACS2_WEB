@@ -4,6 +4,7 @@ import axios from "axios";
 import Movie from "../models/Movie.js";
 import Show from "../models/Show.js";
 import { err } from "inngest/types";
+import { inngest } from "../inngest/index.js";
 // get now playing movie
 //use axios to fetch api endpoint
 export const getNowPlayingMovies = async (req, res) => {
@@ -78,7 +79,16 @@ export const addShow = async (req, res) => {
     if (showToCreate.length > 0) {
       await Show.insertMany(showToCreate);
     }
-    res.json({ success: true, movies: " Show Added successfully" });
+
+    //inngest event trigger
+    await inngest.send({
+      name: "app/show.added",
+      data: { movieTitle: movie.title },
+    });
+    res.json({
+      success: true,
+      movies: " Show Added successfully",
+    });
   } catch (error) {
     console.error(error);
     res.json({ success: false, movies: error.message });
