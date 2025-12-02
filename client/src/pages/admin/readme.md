@@ -26,7 +26,7 @@ const { axios, getToken, user } = useAppContext();
 
 const getAllBookings = async () => {
 try {
-const { data } = await axios.get("/api/show/all-bookings", {
+const { data } = await axios.get("/api/admin/all-bookings", {
 headers: { Authorization: `Bearer ${await getToken()}` },
 });
 if (data.success) {
@@ -46,6 +46,7 @@ if (user) getAllBookings();
 if (isLoading) return <Loading />;
 
 return (
+
 <div className="min-h-screen bg-black text-white">
 {/_ Header _/}
 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-8 gap-4">

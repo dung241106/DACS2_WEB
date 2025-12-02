@@ -125,7 +125,7 @@ const sendBookingConfirmationEmail = inngest.createFunction(
 //function to set reminder
 const sendShowReminders = inngest.createFunction(
   {
-    id: "send-show-reminders  ",
+    id: "send-show-reminders",
   },
   { cron: "0 */8 * * *" }, //every 8h
   async ({ step }) => {
@@ -204,7 +204,7 @@ const sendNewShowNotifications = inngest.createFunction(
   {
     id: "send-new-show-notifications",
   },
-  { event: "app/show.added " },
+  { event: "app/show.added" },
   async ({ event }) => {
     const { movieTitle } = event.data;
     const users = await User.find({});
