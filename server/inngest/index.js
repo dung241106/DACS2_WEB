@@ -206,23 +206,47 @@ const sendNewShowNotifications = inngest.createFunction(
   },
   { event: "app/show.added" },
   async ({ event }) => {
+    console.log("FUNCTION BẮT ĐẦU CHẠY – PHIM MỚI:", event.data.movieTitle); // ← THÊM DÒNG NÀY
+
     const { movieTitle } = event.data;
     const users = await User.find({});
+    console.log("TÌM THẤY", users.length, "USER ĐỂ GỬI MAIL"); // ← THÊM DÒNG NÀY
+
+    if (users.length === 0) {
+      console.log("KHÔNG CÓ USER – SKIP");
+      return { message: "No users to notify" };
+    }
+
+    let sentCount = 0;
     for (const user of users) {
-      const userEmail = user.email;
-      const userName = user.name;
-      const subject = `New Show Added:${movieTitle}`;
-      const body = `<div style="font-family: Arial, sans-serif; padding: 20px;">
-  <h2>Hi ${userName},</h2>
+      try {
+        await sendEmail({
+          to: user.email,
+          subject: `New Show Added: ${movieTitle}`,
+          body: `<div style="font-family: Arial, sans-serif; padding: 20px;">
+  <h2>Hi ${user.name},</h2>
   <p>We've just added a new show to our library:</p>
   <h3 style="color: #F84565;">"${movieTitle}"</h3>
   <p>Visit our website</p>
   <br/>
   <p>Thanks,<br/>QuickShow Team</p>
-</div>`;
-      await sendEmail({ to: userEmail, subject, body });
+</div>`,
+        });
+        sentCount++;
+        console.log("GỬI THÀNH CÔNG CHO:", user.email); // ← THÊM DÒNG NÀY
+      } catch (error) {
+        console.error("LỖI GỬI MAIL CHO", user.email, ":", error.message);
+      }
     }
-    return { message: "Notifications sent." };
+
+    console.log(
+      "TỔNG KẾT: GỬI",
+      sentCount,
+      "/",
+      users.length,
+      "MAIL THÀNH CÔNG"
+    );
+    return { message: `Notifications sent to ${sentCount} users.` };
   }
 );
 export const functions = [
