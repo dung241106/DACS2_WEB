@@ -3,7 +3,11 @@ import User from "../models/User.js";
 import Booking from "../models/Booking.js";
 import Show from "../models/Show.js";
 import sendEmail from "../config/nodeMailer.js";
-
+// Thêm dòng này vào đầu file inngest/index.js
+console.log(
+  "INNGEST FUNCTIONS ĐÃ ĐƯỢC LOAD LẠI – PHIÊN BẢN MỚI NHẤT:",
+  new Date().toISOString()
+);
 // Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
 
@@ -171,19 +175,16 @@ const sendShowReminders = inngest.createFunction(
             to: task.userEmail,
             subject: `Reminder: your movie "${task.movieTitle}" starts soon!`,
             body: `<div style="font-family: Arial, sans-serif; line-height: 1.5;">
-  <h2>Hi ${booking.user.name},</h2>
-  <p>Your booking for <strong style="color: #F84565;">${
-    booking.show.movie.title
-  }</strong> is confirmed.</p>
+  <h2>Hi ${task.userName},</h2>
+  <p>This is a quick reminder that your movie:</p>
+  <h3 style="color:#F84565;">"${task.movieTitle}"> </h3>
   <p>
-    <strong>Date:</strong> ${new Date(
-      booking.show.showDateTime
-    ).toLocaleDateString("en-US", { timeZone: "Asia/Kolkata" })}<br/>
-    <strong>Time:</strong> ${new Date(
-      booking.show.showDateTime
-    ).toLocaleTimeString("en-US", { timeZone: "Asia/Kolkata" })}
-  </p>
-  <p>Enjoy the show! 🍿</p>
+   is scheduled for <strong>${new Date(task.showTime).toLocaleDateString(
+     "en-US",
+     { timeZone: "Asia/Kolkata" }
+   )}</strong>.</p>
+   <p>It start in approximately <strong> 8 Hours </strong></p>
+  <p>Enjoy the show! 🍿<]/p>
   <p>Thanks for booking with us!<br/>— QuickShow Team</p>
 </div>`,
           })
@@ -204,6 +205,7 @@ const sendNewShowNotifications = inngest.createFunction(
   {
     id: "send-new-show-notifications",
   },
+
   { event: "app/show.added" },
   async ({ event }) => {
     console.log("FUNCTION BẮT ĐẦU CHẠY – PHIM MỚI:", event.data.movieTitle); // ← THÊM DÒNG NÀY
